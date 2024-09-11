@@ -7,6 +7,10 @@
     <title>Início</title>
 </head>
 <body>
-   
+   <h2>Bem vindo ao site do Rei empresarial</h2>
+   <div>Selecione sua solicitação</div>
+   <button onclick="location.href='{{ url_for('criar_novo_agendamento') }}'">Realizar novo agendamento</button>
+   <button onclick="location.href='{{ url_for('realizar_login') }}'">Login do Cliente</button>
+   <button onclick="location.href='{{ url_for('cadastro_cliente') }}'">Cadastrar Cliente</button>
 </body>
 </html>

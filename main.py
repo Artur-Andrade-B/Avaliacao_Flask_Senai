@@ -1,8 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, jsonify
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
-
+import pymysql
 import hashlib
 import getpass
 
@@ -47,23 +47,46 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "index"
+    return render_template("index.html")
 
-@app.route("/novocliente")
+@app.route("/cadastrocliente")
+def cadastro_cliente():
+    return render_template("cadastro_usuario.html")
+
+@app.route("/novocliente", methods=["POST"])
 def criar_novo_cliente():
-    return "cria cliente"
+    nome = request.form["id_user"]
+    senha_h = hash_password(request.form[getpass.getpass("i_pass")])
+    email = request.form["i_email"]
+    tel = request.form['i_tel']
+    user = Cliente(nome=nome, telefone=tel, email=email, senha=senha_h)
+    try:
+        session.add(user)
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+        
+    mensagem = "cadastro efetuado com sucesso"
+    return render_template("index.html", msgbanco = mensagem)
 
 @app.route("/novoserviço")
 def criar_novo_servico():
-    return "cria um novo serviço"
+    return render_template("solicitacao_de_servico.html")
 
 @app.route("/novoagendamento")
 def criar_novo_agendamento():
-    return "cria um novo agendamento"
+    return render_template("pagina_agendamento.html")
 
 @app.route("/login")
 def realizar_login():
-    return "realiza login"
+    return render_template("login_usuario.html")
+
+@app.route("/e_login")
+def efetuar_login():
+    return "dev"
 
 @app.route("/logout")
 def realizar_logout():
