@@ -89,9 +89,23 @@ def criar_novo_agendamento():
 def realizar_login():
     return render_template("login_usuario.html")
 
-@app.route("/e_login")
+@app.route("/e_login", methods=["POST"])
 def efetuar_login():
-    return "dev"
+    nome = request.form["id_user"]
+    user = session.query(Cliente).filter_by(nome=nome).first()
+    password_s = request.form["i_pass"]
+    password_h = hash_password(password_s)
+    if user.nome == request.form["id_user"] and user.senha == password_h:
+        try:
+            return render_template("acesso_cliente.html", user=user, nome=nome)
+        except:
+            session.rollback()
+            mensagem = "erro ao realizar login"
+        finally:
+            session.close()
+    else:
+        mensagem = "Os dados do login estão incorretos"
+        return render_template("index.html", mensagem = mensagem)
 
 @app.route("/logout")
 def realizar_logout():
