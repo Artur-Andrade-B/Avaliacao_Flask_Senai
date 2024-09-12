@@ -61,20 +61,26 @@ def criar_novo_cliente():
     email = request.form["i_email"]
     tel = request.form['i_tel']
     user = Cliente(nome=nome, telefone=tel, email=email, senha=senha_h)
-    if user:
-        try:
-            session.add(user)
-            session.commit()
-            mensagem = "cadastro efetuado com sucesso"
-        except:
-            session.rollback()
-            mensagem = "erro ao realizar cadastro"
-            raise
-        finally:
-            session.close()
-    else:
-        mensagem = "erro de ao conectar com o banco"        
     
+    if session.query(Cliente).filter_by(nome=nome).first():
+        session.rollback()
+        mensagem = "nome de usuario ja existe"
+    
+    else:
+        if user:
+            try:
+                session.add(user)
+                session.commit()
+                mensagem = "cadastro efetuado com sucesso"
+            except:
+                session.rollback()
+                mensagem = "erro ao realizar cadastro"
+                raise
+            finally:
+                session.close()
+        else:
+            mensagem = "erro de ao conectar com o banco"        
+        
     return render_template("index.html", mensagem = mensagem)
 
 @app.route("/novoserviço")

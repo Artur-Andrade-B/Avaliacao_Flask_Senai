@@ -16,6 +16,11 @@
             <input type="password" id="i_pass" name="i_pass" required>
             <input type="submit" id="sub_bot" value="Login">
         </form>
+        {% if mensagem %}
+        <div class="mensagem">
+            {{mensagem}}
+        </div>
+        {% endif %}
     </div>
    
 </body>
